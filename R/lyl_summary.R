@@ -145,7 +145,7 @@ summary.lyl_range <- function(object, decimals = 2, weights = NA, difference = F
   ages_onset <- dplyr::mutate(data.frame(t0=weights), age = floor(.data$t0))
   ages_onset <- dplyr::ungroup(dplyr::summarise(dplyr::group_by(ages_onset, .data$age), n = dplyr::n()))
 
-  LYL_ages <- dplyr::mutate(dplyr::left_join(LYL, ages_onset, by = "age", all.x = T),
+  LYL_ages <- dplyr::mutate(dplyr::left_join(LYL, ages_onset, by = "age"),
                             n=ifelse(is.na(.data$n), 0, .data$n))
 
   LYL_avg <- dplyr::select(dplyr::summarise_all(LYL_ages, list(~ stats::weighted.mean(., w = .data$n))), -.data$age, -.data$n)
@@ -296,11 +296,11 @@ summary.lyl_ci <- function(object, decimals = 2, level = 0.95, weights = NA, dif
       ages_onset <- dplyr::mutate(data.frame(t0=weights), age = floor(.data$t0))
       ages_onset <- dplyr::ungroup(dplyr::summarise(dplyr::group_by(ages_onset, .data$age), n = dplyr::n()))
 
-      LYL_ages <- dplyr::mutate(dplyr::left_join(LYL, ages_onset, by = "age", all.x = T),
+      LYL_ages <- dplyr::mutate(dplyr::left_join(LYL, ages_onset, by = "age"),
                                 n=ifelse(is.na(.data$n), 0, .data$n))
       LYL <- dplyr::select(dplyr::summarise_all(LYL_ages, list(~ stats::weighted.mean(., w = .data$n))), -.data$age, -.data$n)
 
-      LYL_ci_ages <- dplyr::mutate(dplyr::left_join(LYL_ci, ages_onset, by = "age", all.x = T),
+      LYL_ci_ages <- dplyr::mutate(dplyr::left_join(LYL_ci, ages_onset, by = "age"),
                                    n=ifelse(is.na(.data$n), 0, .data$n))
       LYL_ci <- dplyr::ungroup(dplyr::select(dplyr::summarise_all(dplyr::group_by(LYL_ci_ages, .data$iteration), list(~ stats::weighted.mean(., w = .data$n))), -.data$age, -.data$n))
       LYL_left <- data.frame(dplyr::summarise_all(dplyr::select(LYL_ci, -.data$iteration), list(low)))
